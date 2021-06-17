@@ -7,6 +7,9 @@ import model.CreateUserRequest;
 import model.CreateUserResponse;
 import model.UserPojoGen;
 import org.junit.Test;
+import steps.UsersSteps;
+import utils.RestWrapper;
+import utils.UserGenerator;
 
 import java.util.List;
 
@@ -22,6 +25,8 @@ public class RestTest {
             .setBasePath("/users")
             .setContentType(ContentType.JSON)
             .build();
+
+    private RestWrapper api = RestWrapper.loginAs("eve.holt@reqres.in", "cityslicka");
 
     @Test
     public void shouldGetUsersList() {
@@ -57,22 +62,13 @@ public class RestTest {
 
     @Test
     public void shouldGetPojoList() {
-        List<UserPojoGen> list = given().spec(REQUEST_SPECIFICATION)
-                .when()
-                .get()
-                .then()
-                .statusCode(200)
-                .extract()
-                .jsonPath()
-                .getList("data", UserPojoGen.class);
+        List<UserPojoGen> list = api.getUsers();
         assertThat(list).extracting(UserPojoGen::getEmail).contains("janet.weaver@reqres.in");
     }
 
     @Test
     public void shouldCreateUser() {
-        CreateUserRequest createUserRequest = new CreateUserRequest();
-        createUserRequest.setName("simple");
-        createUserRequest.setJob("automation");
+        CreateUserRequest createUserRequest = UserGenerator.getSimpleUser();
         CreateUserResponse response = given().spec(REQUEST_SPECIFICATION)
                 .body(createUserRequest)
                 .when().post()

@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import utils.DataDeserializer;
 
 import java.time.LocalDateTime;
 
